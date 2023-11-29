@@ -1,6 +1,6 @@
 import { RpcCommand } from '../rpc-command.js';
 
-export class StartCommand extends RpcCommand {
+export class EndCommand extends RpcCommand {
 	execute() {
 		// Create record in database
 		return 'End';
