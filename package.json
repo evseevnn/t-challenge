@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "start": "node src/index.js | pino-pretty",
+    "start": "node --env-file=.env.local  --env-file=.env src/index.js | pino-pretty",
     "eslint:fix": "eslint --fix ./src/**/*.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,7 +13,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@hyperswarm/rpc": "^3.3.0",
     "hyperbee": "^2.18.1",
+    "hypercore": "^10.31.10",
     "hyperdht": "^6.11.0",
     "hyperswarm": "^4.7.10",
     "pino": "^8.16.2",
