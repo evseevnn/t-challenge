@@ -1,12 +1,12 @@
-const bootstrapHosts = process.env.DHT_BOOTSTRAP?.split(',')
-	.map((host) => host.split(':'))
-	.map(([host, port]) => ({ host, port: parseInt(port) }));
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dbPath = path.resolve(__dirname, '..', process.env.DB_PATH || '_db');
 
 export const config = {
 	database: {
-		path: process.env.DB_PATH || '../_db/auction-server',
-	},
-	dht: {
-		bootstrap: bootstrapHosts || [{ host: '127.0.0.1', port: 30001 }],
+		path: dbPath,
 	},
 };

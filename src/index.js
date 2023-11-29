@@ -1,23 +1,34 @@
-import { rpcService } from './services/rpc.js';
-import { databaseService } from './services/db.js';
 import { createLogger } from './logger.js';
-import { BidCommand } from './commands/bid.js';
+import { Auction } from './auction.js';
 
-const logger = createLogger('bootstrap');
+const logger = createLogger('auction');
 
 (async () => {
-	logger.info('Init db...');
-	await databaseService.init();
+	// Client 1 starting new auction
+	const auctionServer = new Auction();
+	await auctionServer.init();
 
-	logger.info('Init RPC server...');
-	await rpcService.init();
+	const auction1 = new Auction(auctionServer.topic);
+	await auction1.start(50);
 
-	logger.info('Adding RPC commands...');
-	rpcService.addCommand('bid', new BidCommand({ rpcService }));
+	// Client 2 creating new auction
+	const auction2 = new Auction();
+	await auction2.init();
+	await auction2.start(75);
 
-	logger.info('Starting RPC server...');
-	await rpcService.startServer();
+	// Client 2 placing bid
+	const clientOfAuction1 = new Auction(auction1.topic);
+	await clientOfAuction1.init();
+	await clientOfAuction1.placeBid(100);
 
-	const results = await rpcService.lookup('auction', { announce: true });
-	logger.info(`Found ${results.length} auction peers`, results);
+	// Client 3 placing bid
+	const client3OfAuction1 = new Auction(auction1.topic);
+	await client3OfAuction1.init();
+	await client3OfAuction1.placeBid(200);
+
+	await clientOfAuction1.placeBid(300);
+
+	const result = auction1.end();
+
+	logger.info(`Auction result: ${result}`);
 })();
